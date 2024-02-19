@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BarChart } from 'lucide-react'
 import { useState } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from 'recharts'
