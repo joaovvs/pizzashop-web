@@ -1,18 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useQuery } from '@tanstack/react-query'
 import { BarChart } from 'lucide-react'
 import { useState } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from 'recharts'
 import colors from 'tailwindcss/colors'
 
+import { getPopularProducts } from '@/api/get-popular-products'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-const data = [
-  { product: 'Pepperoni', amount: 40 },
-  { product: 'Mussarela', amount: 30 },
-  { product: 'Frango com requeijão', amount: 50 },
-  { product: 'Calabresa', amount: 60 },
-  { product: 'Portuguesa', amount: 16 },
-]
 
 const COLORS = [
   colors.sky[500],
@@ -50,8 +44,18 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.product}
+      <text
+        x={cx}
+        y={cy}
+        dy={8}
+        textAnchor="middle"
+        fill={fill}
+        className="text-xs font-semibold"
+        lengthAdjust="spacing"
+      >
+        {payload.product.length > 14
+          ? payload.product.substring(0, 14).concat('...')
+          : payload.product}
       </text>
       <Sector
         cx={cx}
@@ -81,14 +85,14 @@ const renderActiveShape = (props: any) => {
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#777"
+        className="fill-muted-foreground text-xs"
       >{`Qtd ${value}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
-        fill="#999"
+        className="fill-foreground text-xs font-semibold"
       >
         {`${(percent * 100).toFixed(2)}%`}
       </text>
@@ -97,6 +101,11 @@ const renderActiveShape = (props: any) => {
 }
 
 export function PopularProductsChart() {
+  const { data: popularProducts } = useQuery({
+    queryKey: ['metrics', 'popular-products'],
+    queryFn: getPopularProducts,
+  })
+
   const [state, setState] = useState({ activeIndex: 0 })
 
   const onPieEnter = (_: any, index: number) => {
@@ -116,33 +125,35 @@ export function PopularProductsChart() {
       </CardHeader>
 
       <CardContent>
-        <ResponsiveContainer width="100%" height={270}>
-          <PieChart style={{ fontSize: 12 }}>
-            <Pie
-              activeIndex={state.activeIndex}
-              activeShape={renderActiveShape}
-              data={data}
-              dataKey="amount"
-              nameKey="product"
-              cx="50%"
-              cy="50%"
-              outerRadius={86}
-              innerRadius={64}
-              strokeWidth={3}
-              onMouseEnter={onPieEnter}
-            >
-              {data.map((_, index) => {
-                return (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index]}
-                    className="stroke-background"
-                  />
-                )
-              })}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
+        {popularProducts && (
+          <ResponsiveContainer width="100%" height={270}>
+            <PieChart style={{ fontSize: 12 }}>
+              <Pie
+                activeIndex={state.activeIndex}
+                activeShape={renderActiveShape}
+                data={popularProducts}
+                dataKey="amount"
+                nameKey="product"
+                cx="50%"
+                cy="50%"
+                outerRadius={86}
+                innerRadius={64}
+                strokeWidth={3}
+                onMouseEnter={onPieEnter}
+              >
+                {popularProducts.map((_, index) => {
+                  return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index]}
+                      className="stroke-background"
+                    />
+                  )
+                })}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </CardContent>
     </Card>
   )
