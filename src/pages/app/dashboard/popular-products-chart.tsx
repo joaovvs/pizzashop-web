@@ -14,6 +14,7 @@ const COLORS = [
   colors.violet[500],
   colors.emerald[500],
   colors.rose[500],
+  colors.gray[500],
 ]
 
 const renderActiveShape = (props: any) => {
