@@ -16,7 +16,7 @@ import { getOrderDetailsMock } from './get-order-details-mock'
 import { getOrdersMock } from './get-orders-mock'
 import { getPopularProductsMock } from './get-popular-products-mock'
 import { getProfileMock } from './get-profile-mock'
-import { registerRestaurantInMock } from './register-restaurant-mock copy'
+import { registerRestaurantInMock } from './register-restaurant-mock'
 import { signInMock } from './sign-in-mock'
 import { updateProfileMock } from './update-profile-mock'
 
