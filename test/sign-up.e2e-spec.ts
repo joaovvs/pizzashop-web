@@ -26,7 +26,7 @@ test('sign with error', async ({ page }) => {
   await page.getByRole('button', { name: 'Finalizar Cadastro' }).click()
 
   const toast = page.getByText('Erro ao cadastrar estabelecimento')
-  expect(toast).toBeVisible()
+  await expect(toast).toBeVisible()
 
   await page.waitForTimeout(2000)
 })
@@ -36,7 +36,5 @@ test('navigate to new login page', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Fazer Login' }).click()
 
-  expect(page.url()).toContain('/sign-in')
-
-  await page.waitForTimeout(2000)
+  await expect(page.url()).toContain('/sign-in')
 })
